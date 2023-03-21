@@ -31,14 +31,14 @@
     </style>
 </head>
 
-<body>
-    <header class="p-3 text-white border-bottom">
+<body class="mb-4">
+    <header class="py-3 px-1 px-md-3 text-white border-bottom">
         <div class="container-fluid">
             <div class="d-flex flex-wrap align-items-center justify-content-between">
                 <img src="assets/favicon.png" alt="Logo de jornalista" height="55px"
                     class='border rounded-circle shadow-sm' />
 
-                <form class="col-6 mb-lg-0 mx-3" role="search">
+                <form class="col-8 col-md-6 mb-lg-0 mx-0 mx-md-3" role="search">
                     <input type="search" class="form-control form-control text-dark" placeholder="🔍 Pesquisar contatos..."
                         aria-label="Search" id="search-contacts" />
                 </form>
@@ -122,6 +122,10 @@
             </ul>
         </div>
     </main>
+    <footer class="p-2 m-0 mt-2 border-top d-flex justify-content-between position-fixed fixed-bottom bg-white" style="font-size: 12px;">
+            <div><span class="mb-0 text-muted">Developed by <a href="https://github.com/Vanortton" target="_blank">Vanortton</a> </span>🐱‍👤</div>
+            <div><span class="mb-0 text-muted"><a href="https://api.whatsapp.com/send?text=https://vanortton.github.io/financial-contacts/">Compartilhar no WhatsApp 🚀</a></span></div>
+    </footer>
 
     <script src='https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js'></script>
     <script src='https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js'></script>

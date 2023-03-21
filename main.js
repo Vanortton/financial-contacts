@@ -37,7 +37,10 @@ firebase.auth().onAuthStateChanged(async user => {
 })
 
 const form = document.getElementById("cadastre")
-form.onreset = e => form.reset()
+form.onreset = e => {
+    e.target.reset()
+    document.getElementById("display-imagem").innerHTML = ''
+}
 
 function init() {
     form.onsubmit = e => {
@@ -156,10 +159,11 @@ function displayData(snapshot) {
         ul.innerHTML = ""
         if (!!snapshot.length) {
             snapshot.forEach(doc => {
-                const heading = `<div class="heading d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center"><img src="${doc.photo}" height="50" width="50" class="rounded" /><h3 class="ps-2">${doc.name}</h3></div>
-                <div><button class="btn btn-success me-2" onclick="editeContact('${doc.id}')">✏ Editar</button><button class="btn btn-danger" onclick="deleteContact('${doc.id}')">🗑 Excluir</button></div></div><hr />`
+                const heading = `<div class="heading d-flex align-items-center justify-content-between" style="flex-shrink: 0;">
+                <div class="d-flex align-items-center"><img src="${doc.photo}" height="50" width="50" class="rounded" /><h3 class="ps-2" style="max-width: 40vw;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">${doc.name}</h3></div>
+                <div class="d-flex flex-nowrap"><button class="btn btn-success me-2" onclick="editeContact('${doc.id}')">✏</button><button class="btn btn-danger" onclick="deleteContact('${doc.id}')">🗑</button></div></div><hr />`
                 const array = [
+                    { name: 'Nome', value: doc.name },
                     { name: 'Nome fantasia', value: doc.nameFantasy },
                     { name: 'Banco', value: doc.bank },
                     { name: 'Agência', value: doc.agency },
@@ -169,13 +173,13 @@ function displayData(snapshot) {
                     { name: 'Data de criação', value: doc.dateCreated },
                 ]
                 const body = array.map(dt => `<p class="m-0"><strong>${dt.name}:</strong> ${replaceData(dt.value)}</p>`)
-                ul.innerHTML += '<li class="d-block rounded border p-3 mb-3">' + heading + body.join('') + '</li>'
+                ul.innerHTML += '<li class="d-flex flex-column rounded border p-3 mb-3">' + heading + body.join('') + '</li>'
             })
         } else {
             ul.innerHTML = '<li class="d-block text-center"><h3>Nenhum contato encontrado! 😢</h3><button class="btn btn-primary" onclick="toggleForm(true)">Adicione um novo</button></li>'
         }
     } else if (!auth.currentUser) {
-        ul.innerHTML = '<li class="d-block text-center"><h3>Faça login para adicionar seus contatos! 🚪</h3></li>'
+        ul.innerHTML = '<li class="d-block text-center"><h3>Seus contatos serão listados aqui! 🧾</h3></li>'
     }
 }
 
@@ -353,11 +357,28 @@ function filterData(data) {
                     const filteredDocs = docsWithDateFormate.filter(doc => doc[dateTypeToSearch] === date)
                     displayData(filteredDocs)
                 })
-        } else {
-            if (!alertDateExistis) createAlert('danger', 'Data inválida', 'Digite uma data válida, ex: 15/06/2022.', 1000)
-            alertDateExistis = true
-            setTimeout(() => alertDateExistis = false, 1000)
         }
+    } else {
+        console.log('Entrou aqui')
+        const defaultNamesTypes = ['name', 'nameFantasy', 'bank', 'agency', 'account', 'typeAccount']
+        const docsSearched = []
+        db.collection(auth.currentUser?.email).get()
+            .then(snapshot => {
+                const docsData = snapshot.docs.map(doc => {
+                    const dataDoc = doc.data()
+                    for (let key in dataDoc) dataDoc[key] = replaceData(dataDoc[key])
+                    return dataDoc
+                })
+                console.log(docsData)
+                for (let i = 0; i < defaultNamesTypes.length; i++) {
+                    console.log(defaultNamesTypes[i])
+                    const filteredDocs = docsData.filter(doc => doc[defaultNamesTypes[i]].toLowerCase().includes(data.toLowerCase()))
+                    filteredDocs.forEach(doc => {
+                        if (!docsSearched.find(obj => obj.id === doc.id)) docsSearched.push(doc)
+                    })
+                }
+                displayData(docsSearched)
+            })
     }
 }
 
@@ -366,9 +387,9 @@ document.getElementById('search-contacts').onkeyup = e => {
 }
 
 function search(e = false) {
-    if (e?.target?.value && e?.target?.value?.includes(': ')) {
+    if (e?.target?.value) {
         filterData(e.target.value)
-    } else {
+    } else if(e?.target?.value === '') {
         db.collection(auth.currentUser?.email).get()
             .then(snapshot => {
                 const docs = snapshot.docs.map(doc => doc.data())
