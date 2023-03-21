@@ -235,36 +235,12 @@ function compressImg(file) {
         const display = document.getElementById("display-imagem")
         const reader = new FileReader()
         reader.onload = function (e) {
-            const blob = new Blob([e.target.result], { type: "image/jpeg" })
-            const url = URL.createObjectURL(blob)
-            const img = new Image()
+            const displayImg = document.createElement("img")
+            displayImg.src = reader.result
+            displayImg.classList.add('rounded')
+            display.appendChild(displayImg)
 
-            img.onload = function () {
-                const canvas = document.createElement("canvas")
-                const ctx = canvas.getContext("2d")
-
-                canvas.width = 100
-                canvas.height = 100
-
-                if (img.width > img.height) {
-                    const percentage = (100 / (img.width * 100 / img.height)) * 100
-                    ctx.drawImage(img, -(percentage / 2), 0, img.width * 100 / img.height, canvas.height)
-                } else if (img.width < img.height) {
-                    const percentage = (100 / (img.height * 100 / img.width)) * 100
-                    ctx.drawImage(img, 0, -(percentage / 2), canvas.width, img.height * 100 / img.width)
-                } else {
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-                }
-
-                const dataURL = canvas.toDataURL("image/jpeg", 0.8)
-                const displayImg = document.createElement("img")
-                displayImg.src = dataURL
-                displayImg.classList.add('rounded')
-                display.appendChild(displayImg)
-
-                resolve(dataURL)
-            }
-            img.src = url
+            resolve(reader.result)
         }
         reader.readAsArrayBuffer(file)
     })
@@ -360,7 +336,7 @@ function filterData(data) {
         }
     } else {
         console.log('Entrou aqui')
-        const defaultNamesTypes = ['name', 'nameFantasy', 'bank', 'agency', 'account', 'typeAccount']
+        const defaultNamesTypes = ['name', 'nameFantasy', 'bank', 'agency', 'account', 'typeAccount', 'dateOpening', 'dateCreated']
         const docsSearched = []
         db.collection(auth.currentUser?.email).get()
             .then(snapshot => {
@@ -389,7 +365,7 @@ document.getElementById('search-contacts').onkeyup = e => {
 function search(e = false) {
     if (e?.target?.value) {
         filterData(e.target.value)
-    } else if(e?.target?.value === '') {
+    } else if (e?.target?.value === '') {
         db.collection(auth.currentUser?.email).get()
             .then(snapshot => {
                 const docs = snapshot.docs.map(doc => doc.data())
