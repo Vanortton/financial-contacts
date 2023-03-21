@@ -19,7 +19,7 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         button.dropdown-item:hover {
             background-color: #e7eaed;
         }
@@ -27,6 +27,23 @@
         button.dropdown-item:active {
             background-color: #d1d5d8;
             color: black;
+        }
+
+        div.loading {
+            background: #00000090;
+            backdrop-filter: blur(3px);
+            height: 100%;
+            z-index: 9999;
+        }
+
+        div.loading {
+            background: #00000090;
+            backdrop-filter: blur(3px);
+            height: 100%;
+            z-index: 9999;
+            width: 100%;
+            flex-wrap: wrap;
+            align-items: center;
         }
     </style>
 </head>
@@ -39,13 +56,14 @@
                     class='border rounded-circle shadow-sm' />
 
                 <form class="col-8 col-md-6 mb-lg-0 mx-0 mx-md-3" role="search">
-                    <input type="search" class="form-control form-control text-dark" placeholder="🔍 Pesquisar contatos..."
-                        aria-label="Search" id="search-contacts" />
+                    <input type="search" class="form-control form-control text-dark"
+                        placeholder="🔍 Pesquisar contatos..." aria-label="Search" id="search-contacts" />
                 </form>
 
                 <div class="dropdown-center">
                     <img src="assets/UserIcon.png" alt="Imagem de usuário" class="dropdown-toggle border rounded-circle"
-                        img-user type="button" data-bs-toggle="dropdown" aria-expanded="false" height="40px" width="40px" />
+                        img-user type="button" data-bs-toggle="dropdown" aria-expanded="false" height="40px"
+                        width="40px" />
                     <ul class="dropdown-menu dropdown-menu" id="dropdown-user-info">
                         <li class="p-3 featured rounded mx-3 mb-1">
                             <img src="assets/UserIcon.png" alt="Imagem de usuário" class="border rounded-circle"
@@ -55,21 +73,25 @@
                                 <p class="m-0">email@ex.com</p>
                             </div>
                         </li>
-                        <li class="li-action mx-3 mb-1"><button class="dropdown-item rounded px-3 py-2" onclick="login()">🚪 Entrar na conta...</button></li>
-                        <li class="li-action mx-3"><button class="dropdown-item rounded px-3 py-2" onclick="logout()">🏃‍♂️ Sair desta conta</button></li>
+                        <li class="li-action mx-3 mb-1"><button class="dropdown-item rounded px-3 py-2"
+                                onclick="login()">🚪 Entrar na conta...</button></li>
+                        <li class="li-action mx-3"><button class="dropdown-item rounded px-3 py-2"
+                                onclick="logout()">🏃‍♂️ Sair desta conta</button></li>
                     </ul>
                 </div>
             </div>
         </div>
     </header>
     <main class="p-3 px-md-5 mx-lg-5">
-        <button class="btn btn-white border rounded-pill mx-auto d-block mb-3" onclick="toggleForm(true)">👨‍💼 Adicionar um novo contato</button>
+        <button class="btn btn-white border rounded-pill mx-auto d-block mb-3" onclick="toggleForm(true)">👨‍💼
+            Adicionar um novo contato</button>
         <form class="p-3 border rounded mb-3" id="cadastre">
             <div>
                 <h5><label for="contact-img" class="mb-2">🌄 Foto:</label></h5>
                 <input type="file" class="form-control rounded-0 rounded-top" id="contact-img" />
             </div>
-            <div id="display-imagem" class="mb-3 d-flex justify-content-center align-items-center p-2 rounded-bottom border bg-light"></div>
+            <div id="display-imagem"
+                class="mb-3 d-flex justify-content-center align-items-center p-2 rounded-bottom border bg-light"></div>
             <div class="mb-3">
                 <h5><label for="contact-name" class="mb-2">✉ Nome:</label></h5>
                 <input type="text" class="form-control" id="contact-name" placeholder="Nome do contato" />
@@ -108,8 +130,9 @@
         </form>
         <ul id="list-contacts" class="p-0"></ul>
         <div class="popup-search position-fixed p-3 border rounded bg-white m-3 shadow"
-        style="width: 340px; max-width: 100%; right: 0px; bottom: 0px; transition: .5s;">
-            <p><strong>Adicione algum desses compos no início da caixa de texto para pesquisar por algum dado específico</strong>
+            style="width: 340px; max-width: 100%; right: 0px; bottom: 0px; transition: .5s;">
+            <p><strong>Adicione algum desses compos no início da caixa de texto para pesquisar por algum dado
+                    específico</strong>
             <ul>
                 <li>Nome: </li>
                 <li>Nome fantasia: </li>
@@ -121,16 +144,28 @@
                 <li>Data de abertura: </li>
             </ul>
         </div>
+        <div class="loading position-fixed fixed-top d-flex flex-column justify-content-center">
+            <p>Carregando</p>
+            <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="75"
+                aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 75%"></div>
+            </div>
+        </div>
     </main>
-    <footer class="p-2 m-0 mt-2 border-top d-flex justify-content-between position-fixed fixed-bottom bg-white" style="font-size: 12px;">
-            <div><span class="mb-0 text-muted">Developed by <a href="https://github.com/Vanortton" target="_blank">Vanortton</a> </span>🐱‍👤</div>
-            <div><span class="mb-0 text-muted"><a href="https://api.whatsapp.com/send?text=https://vanortton.github.io/financial-contacts/">Compartilhar no WhatsApp 🚀</a></span></div>
+    <footer class="p-2 m-0 mt-2 border-top d-flex justify-content-between position-fixed fixed-bottom bg-white"
+        style="font-size: 12px;">
+        <div><span class="mb-0 text-muted">Developed by <a href="https://github.com/Vanortton"
+                    target="_blank">Vanortton</a> </span>🐱‍👤</div>
+        <div><span class="mb-0 text-muted"><a
+                    href="https://api.whatsapp.com/send?text=https://vanortton.github.io/financial-contacts/">Compartilhar
+                    no WhatsApp 🚀</a></span></div>
     </footer>
 
     <script src='https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js'></script>
     <script src='https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js'></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"

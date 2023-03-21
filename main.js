@@ -63,7 +63,7 @@ function init() {
             const changedData = {}
             filteredData.forEach(data => changedData[data[0]] = data[1])
             if (contactImg.files?.length > 0) {
-                compressImg(contactImg.files[0])
+                imgInBase64(contactImg.files[0])
                     .then(base64 => {
                         const storageRef = firebase.storage()
                             .ref('contactsImgs/' + docID)
@@ -116,7 +116,7 @@ function init() {
 
 function addContact(dataContact, contactImg) {
     dataContact.dateCreated = new Date().toString()
-    compressImg(contactImg.files[0])
+    imgInBase64(contactImg.files[0])
         .then(base64 => {
             const storageRef = firebase.storage()
                 .ref('contactsImgs/' + removeSpacesAndAccents(dataContact.name) + new Date().getTime())
@@ -160,7 +160,7 @@ function displayData(snapshot) {
         if (!!snapshot.length) {
             snapshot.forEach(doc => {
                 const heading = `<div class="heading d-flex align-items-center justify-content-between" style="flex-shrink: 0;">
-                <div class="d-flex align-items-center"><img src="${doc.photo}" height="50" width="50" class="rounded" /><h3 class="ps-2" style="max-width: 40vw;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">${doc.name}</h3></div>
+                <div class="d-flex align-items-center"><img src="${doc.photo}" height="80" class="rounded" /><h3 class="ps-2" style="max-width: 40vw;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">${doc.name}</h3></div>
                 <div class="d-flex flex-nowrap"><button class="btn btn-success me-2" onclick="editeContact('${doc.id}')">✏</button><button class="btn btn-danger" onclick="deleteContact('${doc.id}')">🗑</button></div></div><hr />`
                 const array = [
                     { name: 'Nome', value: doc.name },
@@ -230,26 +230,27 @@ function createAlert(type, title, message, timeout = 3000) {
     setTimeout(() => buttonClose.click(), timeout)
 }
 
-function compressImg(file) {
+function imgInBase64(file) {
     return new Promise(resolve => {
         const display = document.getElementById("display-imagem")
         const reader = new FileReader()
         reader.onload = function (e) {
             const displayImg = document.createElement("img")
             displayImg.src = reader.result
+            displayImg.height = 100
             displayImg.classList.add('rounded')
             display.appendChild(displayImg)
 
             resolve(reader.result)
         }
-        reader.readAsArrayBuffer(file)
+        reader.readAsDataURL(file)
     })
 }
 
 document.getElementById('contact-img').onchange = e => {
     if (e.target.files[0]) {
         document.getElementById("display-imagem").innerHTML = ""
-        compressImg(e.target.files[0])
+        imgInBase64(e.target.files[0])
     } else {
         document.getElementById("display-imagem").innerHTML = ""
     }
