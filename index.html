@@ -30,20 +30,20 @@
         }
 
         div.loading {
-            background: #00000090;
-            backdrop-filter: blur(3px);
-            height: 100%;
-            z-index: 9999;
-        }
-
-        div.loading {
-            background: #00000090;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            background: #000000b9;
             backdrop-filter: blur(3px);
             height: 100%;
             z-index: 9999;
             width: 100%;
             flex-wrap: wrap;
             align-items: center;
+        }
+
+        div.loading .progress {
+            width: 200px;
         }
     </style>
 </head>
@@ -86,12 +86,10 @@
         <button class="btn btn-white border rounded-pill mx-auto d-block mb-3" onclick="toggleForm(true)">👨‍💼
             Adicionar um novo contato</button>
         <form class="p-3 border rounded mb-3" id="cadastre">
-            <div>
+            <div class="mb-3">
                 <h5><label for="contact-img" class="mb-2">🌄 Foto:</label></h5>
-                <input type="file" class="form-control rounded-0 rounded-top" id="contact-img" />
+                <input type="file" class="form-control" id="contact-img" />
             </div>
-            <div id="display-imagem"
-                class="mb-3 d-flex justify-content-center align-items-center p-2 rounded-bottom border bg-light"></div>
             <div class="mb-3">
                 <h5><label for="contact-name" class="mb-2">✉ Nome:</label></h5>
                 <input type="text" class="form-control" id="contact-name" placeholder="Nome do contato" />
@@ -144,8 +142,8 @@
                 <li>Data de abertura: </li>
             </ul>
         </div>
-        <div class="loading position-fixed fixed-top d-flex flex-column justify-content-center">
-            <p>Carregando</p>
+        <div class="loading position-fixed fixed-top text-white">
+            <p>Carregando...</p>
             <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="75"
                 aria-valuemin="0" aria-valuemax="100">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 75%"></div>

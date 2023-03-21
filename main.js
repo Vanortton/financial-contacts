@@ -63,6 +63,8 @@ function init() {
             const changedData = {}
             filteredData.forEach(data => changedData[data[0]] = data[1])
             if (contactImg.files?.length > 0) {
+                document.querySelector('.loading p').innerHTML = 'Enviando foto 🌄'
+                toggleLoading(true)
                 imgInBase64(contactImg.files[0])
                     .then(base64 => {
                         const storageRef = firebase.storage()
@@ -72,7 +74,8 @@ function init() {
                         task.on('state_changed',
                             function progress(snapshot) {
                                 let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                                console.log(percentage)
+                                document.querySelector('.loading p').innerHTML = 'Enviando foto 🌄 - ' + percentage + '%'
+                                document.querySelector('.loading .progress .progress-bar').style.width = percentage + '%'
                             },
                             function error(err) {
                                 alert('Um erro ocorreu enquanto o elemento de mídia era carregado. Tente novamente. ' + err)
@@ -81,10 +84,13 @@ function init() {
                                 task.snapshot.ref.getDownloadURL()
                                     .then(imageURL => {
                                         changedData.photo = imageURL
+                                        document.querySelector('.loading p').innerHTML = 'Enviando os dados 🧾'
                                         db.collection(auth.currentUser.email).doc(docID).update(changedData)
                                             .then(() => {
+                                                toggleLoading(false)
                                                 createAlert('success', 'Contato cadastrado', 'Seu contato foi cadastrado com sucesso!')
                                             }).catch(err => {
+                                                toggleLoading(false)
                                                 createAlert('error', 'Erro inesperado!', 'Não foi possível cadastrar o contato')
                                             })
                                     })
@@ -118,27 +124,34 @@ function addContact(dataContact, contactImg) {
     dataContact.dateCreated = new Date().toString()
     imgInBase64(contactImg.files[0])
         .then(base64 => {
+            console.log(base64)
             const storageRef = firebase.storage()
                 .ref('contactsImgs/' + removeSpacesAndAccents(dataContact.name) + new Date().getTime())
             const task = storageRef.putString(base64.substring(23), 'base64')
+            document.querySelector('.loading p').innerHTML = 'Enviando foto 🌄'
+            toggleLoading(true)
 
             task.on('state_changed',
                 function progress(snapshot) {
                     let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                    console.log(percentage)
+                    document.querySelector('.loading p').innerHTML = 'Enviando foto 🌄 - ' + percentage + '%'
+                    document.querySelector('.loading .progress .progress-bar').style.width = percentage + '%'
                 },
                 function error(err) {
                     alert('Um erro ocorreu enquanto o elemento de mídia era carregado. Tente novamente. ' + err)
                 },
                 function complete() {
+                    document.querySelector('.loading p').innerHTML = 'Enviando os dados 🧾'
                     task.snapshot.ref.getDownloadURL()
                         .then(imageURL => {
                             dataContact.photo = imageURL
                             db.collection(auth.currentUser.email).doc(dataContact.id).set(dataContact)
                                 .then(() => {
                                     createAlert('success', 'Contato cadastrado', 'Seu contato foi cadastrado com sucesso!')
+                                    toggleLoading(false)
                                 }).catch(err => {
                                     createAlert('error', 'Erro inesperado!', 'Não foi possível cadastrar o contato')
+                                    toggleLoading(false)
                                 })
                         })
                 }
@@ -187,6 +200,12 @@ const toggleForm = bool => bool ?
     form.style.display = 'block' :
     form.style.display = 'none'
 
+const toggleLoading = bool => bool ?
+    document.querySelector('.loading').style.display = 'flex' :
+    document.querySelector('.loading').style.display = 'none'
+
+toggleLoading(false)
+
 const removeSpacesAndAccents = (str) => {
     return str
         .toLowerCase()
@@ -232,15 +251,8 @@ function createAlert(type, title, message, timeout = 3000) {
 
 function imgInBase64(file) {
     return new Promise(resolve => {
-        const display = document.getElementById("display-imagem")
         const reader = new FileReader()
         reader.onload = function (e) {
-            const displayImg = document.createElement("img")
-            displayImg.src = reader.result
-            displayImg.height = 100
-            displayImg.classList.add('rounded')
-            display.appendChild(displayImg)
-
             resolve(reader.result)
         }
         reader.readAsDataURL(file)
@@ -336,7 +348,6 @@ function filterData(data) {
                 })
         }
     } else {
-        console.log('Entrou aqui')
         const defaultNamesTypes = ['name', 'nameFantasy', 'bank', 'agency', 'account', 'typeAccount', 'dateOpening', 'dateCreated']
         const docsSearched = []
         db.collection(auth.currentUser?.email).get()
@@ -346,7 +357,6 @@ function filterData(data) {
                     for (let key in dataDoc) dataDoc[key] = replaceData(dataDoc[key])
                     return dataDoc
                 })
-                console.log(docsData)
                 for (let i = 0; i < defaultNamesTypes.length; i++) {
                     console.log(defaultNamesTypes[i])
                     const filteredDocs = docsData.filter(doc => doc[defaultNamesTypes[i]].toLowerCase().includes(data.toLowerCase()))
